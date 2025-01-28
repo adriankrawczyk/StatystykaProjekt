@@ -1,4 +1,4 @@
-### Załadowanie wymaganych bibliotek
+# Załadowanie wymaganych bibliotek
 library(smoof)
 library(ecr)
 library(ggplot2)
@@ -8,12 +8,47 @@ library(stats)
 # Ustawienie ziarna dla reprodukowalności wyników
 set.seed(12345)
 
-### Funkcje pomocnicze 
+# Funkcje pomocnicze ------------------------------------------------------
 
-source("ga.r")
-source("point.r")
+# Generowanie losowego punktu w dziedzinie
+getRandomPoint <- function(dimensions, lower, upper) {
+  runif(dimensions, min = lower, max = upper)
+}
 
-### Funkcje testowe
+# Algorytm Pure Random Search (PRS)
+performPRS <- function(numberOfEvals, givenFunc, dimensions, lower, upper) {
+  points <- replicate(numberOfEvals, getRandomPoint(dimensions, lower, upper))
+  values <- apply(points, 2, givenFunc)
+  min(values)
+}
+
+# Algorytm Genetyczny (GA)
+performGA <- function(repeats, numberOfEvals, givenFunc, dimensions, lower, upper) {
+  maxEvals <- list(stopOnEvals(numberOfEvals))
+  
+  # Utworzenie wektorów ograniczeń
+  lower_bounds <- rep(lower, dimensions)
+  upper_bounds <- rep(upper, dimensions)
+  
+  result <- replicate(
+    repeats,
+    ecr(
+      fitness.fun = givenFunc,
+      n.dim = dimensions,
+      lower = lower_bounds,
+      upper = upper_bounds,
+      minimize = TRUE,
+      representation = "float",
+      mu = 50L,
+      lambda = 25L,
+      terminators = maxEvals,
+      mutator = setup(mutGauss, lower = lower_bounds, upper = upper_bounds)
+    )$best.y
+  )
+  return(result)
+}
+
+# Funkcje testowe ---------------------------------------------------------
 
 # Tworzenie funkcji testowych dla różnych wymiarów
 create_test_functions <- function() {
@@ -35,7 +70,7 @@ create_test_functions <- function() {
   )
 }
 
-### Eksperymenty
+# Eksperymenty ------------------------------------------------------------
 
 # Uruchomienie eksperymentów dla danej funkcji
 run_experiment <- function(fn_info, dimensions, n_repeats = 100, n_evals = 1000) {
@@ -63,7 +98,7 @@ run_experiment <- function(fn_info, dimensions, n_repeats = 100, n_evals = 1000)
   list(prs = prs_results, ga = ga_results)
 }
 
-### Wizualizacja wyników
+# Wizualizacja wyników ----------------------------------------------------
 visualize_results <- function(prs, ga, fn_name, dimensions) {
   df <- data.frame(
     Algorithm = factor(rep(c("PRS", "GA"), each = length(prs))),
@@ -82,11 +117,18 @@ visualize_results <- function(prs, ga, fn_name, dimensions) {
     ggtitle(paste(fn_name, dimensions, "Porównanie metod")) +
     theme_minimal()
   
+  # Wyświetlenie wykresów
   print(p1)
   print(p2)
+  
+  # Zapis wykresów
+  file_name <- paste0(fn_name, "_", dimensions, "_boxplot.png")
+  ggsave(file_name, plot = p2, width = 8, height = 6)
+  cat("Wykres pudełkowy zapisany ", file_name, "\n")
 }
 
-### Analiza statystyczna
+
+# Analiza statystyczna ----------------------------------------------------
 perform_analysis <- function(prs, ga, fn_name, dimensions) {
   test <- t.test(prs, ga)
   
@@ -95,10 +137,10 @@ perform_analysis <- function(prs, ga, fn_name, dimensions) {
   cat("Średnia GA:", mean(ga), "\n")
   cat("Różnica:", mean(prs) - mean(ga), "\n")
   cat("95% CI różnicy:", round(test$conf.int, 3), "\n")
-  cat("p-value:", format.pval(test$p.vaqlue, digits = 3), "\n")
+  cat("p-value:", format.pval(test$p.value, digits = 3), "\n")
 }
 
-### Główna funkcja wykonująca cały eksperyment
+# Główna funkcja wykonująca cały eksperyment ------------------------------
 main <- function() {
   # Tworzenie funkcji testowych
   test_functions <- create_test_functions()
@@ -117,5 +159,5 @@ main <- function() {
   }
 }
 
-### Uruchomienie głównego programu
+# Uruchomienie głównego programu
 main()
