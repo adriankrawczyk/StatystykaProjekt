@@ -10,43 +10,8 @@ set.seed(12345)
 
 # Funkcje pomocnicze ------------------------------------------------------
 
-# Generowanie losowego punktu w dziedzinie
-getRandomPoint <- function(dimensions, lower, upper) {
-  runif(dimensions, min = lower, max = upper)
-}
-
-# Algorytm Pure Random Search (PRS)
-performPRS <- function(numberOfEvals, givenFunc, dimensions, lower, upper) {
-  points <- replicate(numberOfEvals, getRandomPoint(dimensions, lower, upper))
-  values <- apply(points, 2, givenFunc)
-  min(values)
-}
-
-# Algorytm Genetyczny (GA)
-performGA <- function(repeats, numberOfEvals, givenFunc, dimensions, lower, upper) {
-  maxEvals <- list(stopOnEvals(numberOfEvals))
-  
-  # Utworzenie wektorów ograniczeń
-  lower_bounds <- rep(lower, dimensions)
-  upper_bounds <- rep(upper, dimensions)
-  
-  result <- replicate(
-    repeats,
-    ecr(
-      fitness.fun = givenFunc,
-      n.dim = dimensions,
-      lower = lower_bounds,
-      upper = upper_bounds,
-      minimize = TRUE,
-      representation = "float",
-      mu = 50L,
-      lambda = 25L,
-      terminators = maxEvals,
-      mutator = setup(mutGauss, lower = lower_bounds, upper = upper_bounds)
-    )$best.y
-  )
-  return(result)
-}
+source("ga.r")
+source("point.r")
 
 # Funkcje testowe ---------------------------------------------------------
 
