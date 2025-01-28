@@ -1,0 +1,260 @@
+Projekt zaliczeniowy
+Projekt zaliczeniowy
+Projekt polega na prostym opracowaniu statystycznym wyników porównania działania wybranych algorytmów minimalizacji stochastycznej. Do porównania należy wybrać dwa spośród zaprezentowanych poniżej.
+
+Poszukiwanie przypadkowe (Pure Random Search, PRS)
+
+Losujemy po kolei zadaną z góry liczbę punktów z rozkładem jednostajnym w zadanej dziedzinie. Jeżeli dziedzina jest kostką wielowymiarową (tu tak ma być), to można (i trzeba) losować kolejno współrzędne poszczególnych punktów według odpowiedniego jednowymiarowego rozkładu jednostajnego, np. jeśli dziedzina poszukiwania jest kostką trójwymiarową
+[0,1]×[−2,2]×[100,1000],
+to pierwszą współrzędną każdego punktu losujemy z rozkładu U(0,1)
+, drugą z rozkładu U(−2,2)
+, a trzecią z rozkładu U(100,1000)
+. Każdy wylosowany punkt porównujemy z aktualnie zapamiętanym minimum i jeśli wartość minimalizowanej funkcji w tym punkcie jest mniejsza, to ten punkt zapamiętujemy jako aktualny punkt minimalny. Wartość funkcji w ostatnim zapamiętanym punkcie stanowi wynik algorytmu.
+
+Metoda wielokrotnego startu (multi-start, MS)
+
+Losujemy (podobnie jak poprzednio) zadaną liczbę punktów z rozkładem jednostajnym w dziedzinie przeszukiwania, a następnie z każdego z wylosowanych punktów startujemy numeryczną metodę optymalizacji lokalnej: w tym wypadku należy użyć metody L-BFGS-B dostępnej w standardowej fukcji optim(). Wynikiem algorytmu jest wartość optymalizowanej funkcji w tym z punktów zwróconych przez uruchomienia metody lokalnej, w którym ta wartość jest najmniejsza.
+
+Algorytm genetyczny (GA)
+
+Należy użyć implementacji z pakietu ecr dostępnego w CRAN. Wynikiem jest najmniejsza znaleziona wartość funkcji.
+
+Uwagi
+Do porównania należy wybrać dwie z funkcji dostępnych w pakiecie smoof, które są skalarne (single-objective) i mają wersje dla różnej liczby wymiarów (akceptują parametr dimensions). Własności te mają np. funkcje Ackley’a, Rastrigina, Schwefela, Rosenbrocka, Michalewicza, Eggholder, Alpine01, Alpine02. Funkcja kwadratowa (Sphere) jest zakazana.
+
+Każda grupa projektowa ma wykorzystywać inną parę funkcji, tzn. może się zdarzyć, że dwie grupy wybiorą np. funkcję Rosenbrocka, ale wtedy muszą się różnić drugą wybraną funkcją. Lista grup i wybranych funkcji jest dostępna w postaci edytowalnej strony Wiki w kursie w UPEL.
+
+Dziedziny poszukiwań są przypisane poszczególnym funkcjom z pakietu smoof (atrybut par.set) i należy je respektować (w szczególności w wywołaniu funkcji optim()).
+
+Porównanie należy wykonać dla każdej funkcji osobno i osobno dla liczby wymiarów 2, 10 i 20 (co daje łącznie 6 porównań).
+
+Porównać należy średni wynik algorytmu, czyli średnią znalezionych minimów. Średnią liczymy z nie mniej niż 50 uruchomień każdego algorytmu osobno dla każdej funkcji i każdej liczby wymiarów (co daje łącznie 600 uruchomień). W tego rodzaju powtarzanych obliczeniach użyteczna jest funkcja replicate().
+
+Należy zadbać o wyrównany budżet obliczeniowy porównywanych algorytmów - budżet określamy jako liczbę wywołań minimalizowanej funkcji (NIE chodzi tutaj o liczbę iteracji algorytmu). Dla algorytmów genetycznych ten budżet należy określić wprost jako warunek zatrzymania. Konkretnie:
+
+w porównaniu PRS-GA należy budżet określić na 1000 wywołań;
+jeśli jedną z porównywanych metod jest MS, to należy tę metodę uruchomić jako pierwszą dla 100 punktów startowych, a następnie średnią liczbę wywołań z uruchomień MS określić jako budżet porównywanej metody (GA lub PRS).
+W ramach porównania należy wykonać obrazki, tzn. histogramy i wykresy pudełkowe (lub skrzypcowe), i dokonać analizy ich zawartości pod kątem położenia i rozproszenia rozkładu wyników.
+
+Należy też dokonać analizy istotności statystycznej różnicy między średnim wynikiem obu algorytmów (dla każdej funkcji i liczby wymiarów osobno). Analizę należy oprzeć na odpowiednich przedziałach ufności (95-procentowych) i testach hipotez zerowych. Ze względu na liczbę powtórzeń zakładamy, że rozkład średniej może być sensownie przybliżony przez rozkład normalny.
+
+Projekt może być realizowany w zespołach dwuosobowych.
+
+Projekt ma być wykonany w środowisku R. Raport wyników może mieć formę dokumentu R Markdown.
+library(smoof)
+library(ecr)
+library(ggplot2)
+library(kableExtra)
+set.seed(12345)
+alpine01_2D <- makeAlpine01Function(2)
+alpine01_10D <- makeAlpine01Function(10)
+alpine01_20D <- makeAlpine01Function(20)
+rosenbrock_2D <- makeRosenbrockFunction(2)
+rosenbrock_10D <- makeRosenbrockFunction(10)
+rosenbrock_20D <- makeRosenbrockFunction(20)
+getRandomPoint <- function(dimensions, domain){
+rndPoint <- replicate(n=dimensions, runif(1,-domain,domain))
+return(rndPoint)
+}
+performPRS <- function(numberOfExec, givenFunc, pointsGenerator, dimensions, domain){
+generatedPoints <- replicate(numberOfExec, pointsGenerator(dimensions, domain))
+pointsMat <- matrix(generatedPoints, nrow = numberOfExec)
+res <- apply(pointsMat, 1, givenFunc)
+return(min(res))
+}
+alpine01_2D_result_PRS <- replicate(100, performPRS(1000, alpine01_2D, getRandomPoint, 2, 10))
+alpine01_10D_result_PRS <- replicate(100, performPRS(1000, alpine01_10D, getRandomPoint, 10, 10))
+alpine01_20D_result_PRS <- replicate(100, performPRS(1000, alpine01_20D, getRandomPoint, 20, 10))
+rosenbrock_2D_result_PRS <- replicate(100, performPRS(1000, rosenbrock_2D, getRandomPoint, 2, 30))
+rosenbrock_10D_result_PRS <- replicate(100, performPRS(1000, rosenbrock_10D, getRandomPoint, 10, 30))
+rosenbrock_20D_result_PRS <- replicate(100, performPRS(1000, rosenbrock_20D, getRandomPoint, 20, 30))
+mean_alpine01_2D_result_PRS <- mean(alpine01_2D_result_PRS)
+mean_alpine01_10D_result_PRS <- mean(alpine01_10D_result_PRS)
+mean_alpine01_20D_result_PRS <- mean(alpine01_20D_result_PRS)
+mean_rosenbrock_2D_result_PRS <- mean(rosenbrock_2D_result_PRS)
+mean_rosenbrock_10D_result_PRS <- mean(rosenbrock_10D_result_PRS)
+mean_rosenbrock_20D_result_PRS <- mean(rosenbrock_20D_result_PRS)
+performGA <- function(reapet, numberOfExec, givenFunc, dimensions, domain, numParents, numChildren) {
+maxEvals <- list(stopOnEvals(numberOfExec))
+lower <- replicate(dimensions, -domain)
+upper <- replicate(dimensions, domain)
+result <- replicate(reapet, ecr(
+givenFunc,
+n.dim = dimensions,
+lower = lower,
+upper = upper,
+minimize = TRUE,
+representation = "float",
+mu = numParents,
+lambda = numChildren,
+terminators = maxEvals,
+mutator = setup(mutGauss, lower=lower, upper=upper)
+)$best.y)
+return(result)
+}
+alpine01_2D_result_GA <- performGA(100, 1000, alpine01_2D, 2, 10, 50L, 25L)
+alpine01_10D_result_GA <- performGA(100, 1000, alpine01_10D, 10, 10, 50L, 25L)
+alpine01_20D_result_GA <- performGA(100, 1000, alpine01_20D, 20, 10, 50L, 25L)
+rosenbrock_2D_result_GA <- performGA(100, 1000, rosenbrock_2D, 2, 30, 50L, 25L)
+rosenbrock_10D_result_GA <- performGA(100, 1000, rosenbrock_10D, 10, 30, 50L, 25L)
+rosenbrock_20D_result_GA <- performGA(100, 1000, rosenbrock_20D, 20, 30, 50L, 25L)
+mean_alpine01_2D_result_GA <- mean(alpine01_2D_result_GA)
+mean_alpine01_10D_result_GA <- mean(alpine01_10D_result_GA)
+mean_alpine01_20D_result_GA <- mean(alpine01_20D_result_GA)
+mean_rosenbrock_2D_result_GA <- mean(rosenbrock_2D_result_GA)
+mean_rosenbrock_10D_result_GA <- mean(rosenbrock_10D_result_GA)
+mean_rosenbrock_20D_result_GA <- mean(rosenbrock_20D_result_GA)
+visualizeResults <- function(vec1, vec2, mean1, mean2, name1, name2, minimum, binw1, binw2){
+df <- data.frame(
+type=factor(rep(c(name1, name2), each=100)),
+result=round(c(vec1, vec2))
+)
+df1 <- data.frame(
+type=factor(rep(name1)),
+values = vec1)
+df2 <- data.frame(
+type=factor(rep(name2)),
+values = vec2)
+p1 <- ggplot(df1, aes(x=values))+
+geom_histogram(binwidth = binw1, color="black", fill="blue", alpha=0.4)+
+geom_vline(xintercept=mean1, color="red", linetype="dashed", size=1)+
+geom_vline(xintercept=minimum, color='darkgreen', size=1)+
+ggtitle(name1)
+p2 <- ggplot(df2, aes(x=values))+
+geom_histogram(binwidth = binw2, color="black", fill="blue", alpha=0.4)+
+geom_vline(xintercept=mean2, color="red", linetype="dashed", size=1)+
+geom_vline(xintercept=minimum, color='darkgreen', size=1)+
+ggtitle(name2)
+vp <- ggplot(df, aes(x=result , y=type)) + geom_violin(trim=TRUE) + stat_summary(fun = "mean", geom = "point", aes(color = "Mean")) + scale_colour_manual(values = c("red", "blue"), name = "")
+plot(p1)
+plot(p2)
+plot(vp)
+}
+visualizeResults(alpine01_2D_result_PRS, alpine01_2D_result_GA, mean_alpine01_2D_result_PRS, mean_alpine01_2D_result_GA, "Alpine01 2D PRS", "Alpine01 2D GA", 0, 0.017, 0.0012)
+visualizeResults(alpine01_10D_result_PRS, alpine01_10D_result_GA, mean_alpine01_10D_result_PRS, mean_alpine01_10D_result_GA,"Alpine01 10D PRS", "Alpine01 10D GA", 0, 0.75, 0.35)
+visualizeResults(alpine01_20D_result_PRS, alpine01_20D_result_GA, mean_alpine01_20D_result_PRS, mean_alpine01_20D_result_GA, "Alpine01 20D PRS", "Alpine01 20D GA", 0, 2, 0.75)
+visualizeResults(rosenbrock_2D_result_PRS, rosenbrock_2D_result_GA, mean_rosenbrock_2D_result_PRS, mean_rosenbrock_2D_result_GA, "Rosenbrock 2D PRS", "Rosenbrock 2D GA", 0, 4, 0.4)
+visualizeResults(rosenbrock_10D_result_PRS, rosenbrock_10D_result_GA, mean_rosenbrock_10D_result_PRS, mean_rosenbrock_10D_result_GA, "Rosenbrock 10D PRS", "Rosenbrock 10D GA", 0, 1000000, 500)
+visualizeResults(rosenbrock_20D_result_PRS, rosenbrock_20D_result_GA, mean_rosenbrock_20D_result_PRS, mean_rosenbrock_20D_result_GA, "Rosenbrock 20D PRS", "Rosenbrock 20D GA", 0, 6000000, 3000)
+df <- data.frame(
+Rosenbrock2D = c(mean_rosenbrock_2D_result_PRS, mean_rosenbrock_2D_result_GA, abs(mean_rosenbrock_2D_result_PRS -mean_rosenbrock_2D_result_GA ),0),
+Rosenbrock10D = c(mean_rosenbrock_10D_result_PRS, mean_rosenbrock_10D_result_GA, abs(mean_rosenbrock_10D_result_PRS - mean_rosenbrock_10D_result_GA),0),
+Rosenbrock20D = c(mean_rosenbrock_20D_result_PRS, mean_rosenbrock_20D_result_GA, abs(mean_rosenbrock_20D_result_PRS - mean_rosenbrock_20D_result_GA),0),
+Alpine01_2D = c(mean_alpine01_2D_result_PRS, mean_alpine01_2D_result_GA, abs(mean_alpine01_2D_result_PRS - mean_alpine01_2D_result_GA),0),
+Alpine01_10D = c(mean_alpine01_10D_result_PRS, mean_alpine01_10D_result_GA, abs(mean_alpine01_10D_result_PRS - mean_alpine01_10D_result_GA), 0),
+Alpine01_20D = c(mean_alpine01_20D_result_PRS, mean_alpine01_20D_result_GA, abs(mean_alpine01_20D_result_PRS - mean_alpine01_20D_result_GA), 0)
+)
+row.names(df) <- c("PRS", "GA", "Różnica","Globalne minimum")
+kable(df) %>%
+kable_styling(font_size = 12, position = "center", latex_options = c("striped", "hold_position")) %>%
+row_spec(0, bold = TRUE, color = "white", background = "gray")
+rb2dr = t.test(rosenbrock_2D_result_PRS,rosenbrock_2D_result_GA, paired = TRUE)
+rb10dr = t.test(rosenbrock_10D_result_PRS,rosenbrock_10D_result_GA, paired = TRUE)
+rb20dr = t.test(rosenbrock_20D_result_PRS,rosenbrock_20D_result_GA, paired = TRUE)
+alpine2dt = t.test(alpine01_2D_result_PRS, alpine01_2D_result_GA, paired = TRUE)
+alpine10dt = t.test(alpine01_10D_result_PRS, alpine01_10D_result_GA, paired = TRUE)
+alpine20dt = t.test(alpine01_20D_result_PRS, alpine01_20D_result_GA, paired = TRUE)
+print(rb2dr)
+print(rb10dr)
+print(rb20dr)
+print(alpine2dt)
+print(alpine10dt)
+print(alpine20dt)
+df <- data.frame(
+Rosenbrock2D = c(paste(round(rb2dr$conf.int[1:2], 3), collapse = " - "), rb2dr$p.value, round(rb2dr$estimate,3)),
+Rosenbrock10D = c(paste(round(rb10dr$conf.int[1:2],3), collapse = " - "), rb10dr$p.value, round(rb10dr$estimate,3)),
+Rosenbrock20D = c(paste(round(rb20dr$conf.int[1:2],3), collapse = " - "), rb20dr$p.value, round(rb20dr$estimate,3)),
+Alpine01_2D = c(paste(round(alpine2dt$conf.int[1:2],3), collapse = " - "), alpine2dt$p.value, round(alpine2dt$estimate,3)),
+Alpine01_10D = c(paste(round(alpine10dt$conf.int[1:2],3), collapse = " - "), alpine10dt$p.value, round(alpine10dt$estimate,3)),
+Alpine01_20D = c(paste(round(alpine20dt$conf.int[1:2],3), collapse = " - "), alpine20dt$p.value, round(alpine20dt$estimate,3))
+)
+row.names(df) <- c("Przedział ufności [95%]", "Wartość P", "Różnica w średniej")
+kable(df) %>%
+kable_styling(font_size = 9.5, position = "center", latex_options = c("striped", "hold_position")) %>%
+row_spec(0, bold = TRUE, color = "white", background = "gray")
+
+library(stats)
+library(smoof)
+source("prs.r")
+source("ms.r")
+
+compar <- function(fn, dimensions, bounds) {
+print(paste("Wymiary:", dimensions))
+msRes <- replicate(100, calcMS(100, dimensions, bounds[1], bounds[2], fn))
+
+msValue <- msRes[1,]
+budget <- round(mean(msRes[2,]))
+
+print("MS:")
+print(paste("Średnia wartość:", mean(msValue)))
+print(paste("Budżet:", budget))
+
+prsValue <- replicate(100, prs(fn, generatePoints(budget, dimensions, bounds[1], bounds[2])))
+
+print("---------")
+print("PRS:")
+print(paste("Średnia wartość:", mean(prsValue)))
+
+return (list(msValue, prsValue))
+}
+
+ackleyBounds <- c(-32.768, 32.768)
+print("Funkcja Ackleya")
+ackley2D <- compar(makeAckleyFunction(2), 2, ackleyBounds)
+ackley2Dms <- ackley2D[[1]]
+ackley2Dprs <- ackley2D[[2]]
+
+write.csv(ackley2Dms, file = "./data/ackley2Dms.csv", row.names = FALSE)
+
+write.csv(ackley2Dprs, file = "./data/ackley2Dprs.csv", row.names = FALSE)
+
+print("========================")
+ackley10D <- compar(makeAckleyFunction(10), 10, ackleyBounds)
+ackley10Dms <- ackley10D[[1]]
+ackley10Dprs <- ackley10D[[2]]
+
+write.csv(ackley10Dms, file = "./data/ackley10Dms.csv", row.names = FALSE)
+
+write.csv(ackley10Dprs, file = "./data/ackley10Dprs.csv", row.names = FALSE)
+
+print("========================")
+ackley20D <- compar(makeAckleyFunction(20), 20, ackleyBounds)
+ackley20Dms <- ackley20D[[1]]
+ackley20Dprs <- ackley20D[[2]]
+
+write.csv(ackley20Dms, file = "./data/ackley20Dms.csv", row.names = FALSE)
+
+write.csv(ackley20Dprs, file = "./data/ackley20Dprs.csv", row.names = FALSE)
+
+print("")
+
+rastriginBounds <- c(-5.12, 5.12)
+print("Funkcja Rastrigina")
+rastrigin2D <- compar(makeRastriginFunction(2), 2, rastriginBounds)
+rastrigin2Dms <- rastrigin2D[[1]]
+rastrigin2Dprs <- rastrigin2D[[2]]
+
+write.csv(rastrigin2Dms, file = "./data/rastrigin2Dms.csv", row.names = FALSE)
+
+write.csv(rastrigin2Dprs, file = "./data/rastrigin2Dprs.csv", row.names = FALSE)
+
+print("========================")
+rastrigin10D <- compar(makeRastriginFunction(10), 10, rastriginBounds)
+rastrigin10Dms <- rastrigin10D[[1]]
+rastrigin10Dprs <- rastrigin10D[[2]]
+
+write.csv(rastrigin10Dms, file = "./data/rastrigin10Dms.csv", row.names = FALSE)
+
+write.csv(rastrigin10Dprs, file = "./data/rastrigin10Dprs.csv", row.names = FALSE)
+
+print("========================")
+rastrigin20D <- compar(makeRastriginFunction(20), 20, rastriginBounds)
+rastrigin20Dms <- rastrigin20D[[1]]
+rastrigin20Dprs <- rastrigin20D[[2]]
+
+write.csv(rastrigin20Dms, file = "./data/rastrigin20Dms.csv", row.names = FALSE)
+
+write.csv(rastrigin20Dprs, file = "./data/rastrigin20Dprs.csv", row.names = FALSE)
+
+tu sa przykladowe kody my mamy ackley i alpine02
+napisz to tak zebym mogl wkleic w vsc i zeby dzialalo run source i poszlo cale
