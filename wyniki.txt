@@ -1,0 +1,205 @@
+=== Rozpoczęcie analizy dla funkcji ackley ===
+
+--- Wymiar: 2D ---
+
+=== Statystyki dla ackley 2D ===
+     Algorytm   Średnia      Minimum Maksimum      Mediana Dolny_kwartyl
+25%       PRS 4.1591984 2.649118e-01 6.993736 4.1154921070  3.302462e+00
+25%1       GA 0.2849825 2.732899e-06 3.574601 0.0005213565  7.582016e-05
+     Górny_kwartyl
+25%    4.876225931
+25%1   0.005399645
+
+=== Analiza statystyczna dla ackley 2D ===
+Różnica średnich: 3.874216
+95% CI: 3.5767 do 4.1718
+p-value: 8.624084e-46 
+
+--- Wymiar: 10D ---
+
+=== Statystyki dla ackley 10D ===
+     Algorytm   Średnia   Minimum Maksimum   Mediana Dolny_kwartyl
+25%       PRS 18.114587 11.950250 19.37780 18.294882     17.722502
+25%1       GA  8.743116  4.405496 13.20062  8.786486      7.333755
+     Górny_kwartyl
+25%      18.709315
+25%1      9.982874
+
+=== Analiza statystyczna dla ackley 10D ===
+Różnica średnich: 9.371471
+95% CI: 8.9616 do 9.7813
+p-value: 4.628509e-68
+
+--- Wymiar: 20D ---
+
+=== Statystyki dla ackley 20D ===
+     Algorytm  Średnia   Minimum Maksimum  Mediana Dolny_kwartyl Górny_kwartyl
+25%       PRS 19.82919 18.174498 20.25258 19.86640     19.698169      20.03175
+25%1       GA 10.95257  6.480098 14.39995 11.01664      9.955998      11.84225
+
+=== Analiza statystyczna dla ackley 20D ===
+Różnica średnich: 8.876623
+95% CI: 8.6008 do 9.1524
+p-value: 2.887349e-82
+
+
+=== Rozpoczęcie analizy dla funkcji alpine02 ===
+
+--- Wymiar: 2D ---
+
+=== Statystyki dla alpine02 2D ===
+     Algorytm   Średnia   Minimum  Maksimum   Mediana Dolny_kwartyl
+25%       PRS -6.077996 -6.129367 -5.920506 -6.092479     -6.114566
+25%1       GA -6.129451 -6.129504 -6.124832 -6.129504     -6.129504
+     Górny_kwartyl
+25%      -6.058460
+25%1     -6.129502
+
+=== Analiza statystyczna dla alpine02 2D ===
+Różnica średnich: 0.05145471
+95% CI: 0.0419 do 0.0611
+p-value: 4.524745e-18
+
+--- Wymiar: 10D ---
+
+=== Statystyki dla alpine02 10D ===
+     Algorytm    Średnia   Minimum  Maksimum    Mediana Dolny_kwartyl
+25%       PRS  -793.3231 -3552.597 -166.2384  -589.6649     -911.8647
+25%1       GA -1814.7092 -6001.010 -510.4919 -1457.3967    -2308.8899
+     Górny_kwartyl
+25%      -428.5066
+25%1     -960.8249
+
+=== Analiza statystyczna dla alpine02 10D ===
+Różnica średnich: 1021.386
+95% CI: 733.8475 do 1308.9248
+p-value: 2.457977e-10
+
+--- Wymiar: 20D ---
+
+=== Statystyki dla alpine02 20D ===
+     Algorytm    Średnia    Minimum  Maksimum   Mediana Dolny_kwartyl
+25%       PRS  -38843.84  -431934.7  -2007.01  -12494.7     -33150.51
+25%1       GA -393902.27 -7021194.2 -11284.32 -161473.8    -445621.59
+     Górny_kwartyl
+25%      -8147.926
+25%1    -84517.636
+
+=== Analiza statystyczna dla alpine02 20D ===
+Różnica średnich: 355058.4
+95% CI: 201763.5966 do 508353.2685
+p-value: 1.27335e-05
+=== Analiza statystyczna dla alpine02 20D ===
+Różnica średnich: 355058.4
+=== Analiza statystyczna dla alpine02 20D ===
+=== Analiza statystyczna dla alpine02 20D ===
+=== Analiza statystyczna dla alpine02 20D ===
+Różnica średnich: 355058.4
+95% CI: 201763.5966 do 508353.2685
+p-value: 1.27335e-05
+Warning message:
+Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+=== Analiza statystyczna dla alpine02 20D ===
+Różnica średnich: 355058.4
+Różnica średnich: 355058.4
+95% CI: 201763.5966 do 508353.2685
+p-value: 1.27335e-05
+Warning message:
+Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+> source("c:\\Users\\Admin\\Desktop\\moje\\3 SEM\\STATA\\projektvsc\\main2.r",$
+
+
+=== Rozpoczęcie analizy dla funkcji ackley ===
+
+--- Wymiar: 2D ---
+
+=== Statystyki dla ackley 2D ===
+     Algorytm   Średnia      Minimum Maksimum      Mediana Dolny_kwartyl
+25%       PRS 4.1591984 2.649118e-01 6.993736 4.1154921070  3.302462e+00
+25%1       GA 0.2849825 2.732899e-06 3.574601 0.0005213565  7.582016e-05
+     Górny_kwartyl
+25%    4.876225931
+25%1   0.005399645
+
+=== Analiza statystyczna dla ackley 2D ===
+Różnica średnich: 3.874216
+95% CI: 3.5767 do 4.1718
+p-value: 8.624084e-46
+
+--- Wymiar: 10D ---
+
+=== Statystyki dla ackley 10D ===
+     Algorytm   Średnia   Minimum Maksimum   Mediana Dolny_kwartyl
+25%       PRS 18.114587 11.950250 19.37780 18.294882     17.722502
+25%1       GA  8.743116  4.405496 13.20062  8.786486      7.333755
+     Górny_kwartyl
+25%      18.709315
+25%1      9.982874
+
+=== Analiza statystyczna dla ackley 10D ===
+Różnica średnich: 9.371471
+95% CI: 8.9616 do 9.7813
+p-value: 4.628509e-68 
+
+--- Wymiar: 20D ---
+
+=== Statystyki dla ackley 20D ===
+     Algorytm  Średnia   Minimum Maksimum  Mediana Dolny_kwartyl Górny_kwartyl
+25%       PRS 19.82919 18.174498 20.25258 19.86640     19.698169      20.03175
+25%1       GA 10.95257  6.480098 14.39995 11.01664      9.955998      11.84225
+
+=== Analiza statystyczna dla ackley 20D ===
+Różnica średnich: 8.876623
+95% CI: 8.6008 do 9.1524
+p-value: 2.887349e-82
+
+
+=== Rozpoczęcie analizy dla funkcji alpine02 ===
+
+--- Wymiar: 2D ---
+
+=== Statystyki dla alpine02 2D ===
+     Algorytm   Średnia   Minimum  Maksimum   Mediana Dolny_kwartyl
+25%       PRS -6.077996 -6.129367 -5.920506 -6.092479     -6.114566
+25%1       GA -6.129451 -6.129504 -6.124832 -6.129504     -6.129504
+     Górny_kwartyl
+25%      -6.058460
+25%1     -6.129502
+
+=== Analiza statystyczna dla alpine02 2D ===
+Różnica średnich: 0.05145471
+95% CI: 0.0419 do 0.0611
+p-value: 4.524745e-18 
+
+--- Wymiar: 10D ---
+
+=== Statystyki dla alpine02 10D ===
+     Algorytm    Średnia   Minimum  Maksimum    Mediana Dolny_kwartyl
+25%       PRS  -793.3231 -3552.597 -166.2384  -589.6649     -911.8647
+25%1       GA -1814.7092 -6001.010 -510.4919 -1457.3967    -2308.8899
+     Górny_kwartyl
+25%      -428.5066
+25%1     -960.8249
+
+=== Analiza statystyczna dla alpine02 10D ===
+Różnica średnich: 1021.386
+95% CI: 733.8475 do 1308.9248
+p-value: 2.457977e-10
+
+--- Wymiar: 20D ---
+
+=== Statystyki dla alpine02 20D ===
+     Algorytm    Średnia    Minimum  Maksimum   Mediana Dolny_kwartyl
+25%       PRS  -38843.84  -431934.7  -2007.01  -12494.7     -33150.51
+25%1       GA -393902.27 -7021194.2 -11284.32 -161473.8    -445621.59
+     Górny_kwartyl
+25%      -8147.926
+25%1    -84517.636
+
+=== Analiza statystyczna dla alpine02 20D ===
+Różnica średnich: 355058.4
+95% CI: 201763.5966 do 508353.2685
+p-value: 1.27335e-05
